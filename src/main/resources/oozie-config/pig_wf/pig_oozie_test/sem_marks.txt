@@ -1,0 +1,9 @@
+Jasjyot,1,30,70,60
+Ashwani,1,85,69,55
+Naresh,3,22,88,66
+Jasjyot,2,30,76,60
+Ashwani,2,45,59,55
+Naresh,1,12,88,66
+Jasjyot,3,30,70,60
+Ashwani,3,85,42,55
+Naresh,2,22,88,66

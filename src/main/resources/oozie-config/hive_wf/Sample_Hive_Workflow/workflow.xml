@@ -1,0 +1,23 @@
+<workflow-app name="oozie-hive-test" xmlns="uri:oozie:workflow:0.5">
+<global>
+<job-tracker>${jobTracker}</job-tracker>
+<name-node>${nameNode}</name-node>
+</global>
+ <start to="hive2-countrec"/>
+ <kill name="Kill">
+ <message>Action failed for Hive , error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+ </kill>
+<action name="hive2-countrec">
+<hive2 xmlns="uri:oozie:hive2-action:0.1">
+<jdbc-url>jdbc:hive2://localhost:10000</jdbc-url>
+<script>/user/cloudera/Sample_Hive_Workflow/pigcount.hql</script>
+<param>TGT=${jobTarget}</param>
+<param>SRC=${jobSrc}</param>
+<param>queuename=${queuename}</param>
+<param>dbname=oozietest</param>
+</hive2>
+<ok to="End"/>
+<error to="Kill"/>
+</action>
+ <end name="End"/>
+</workflow-app>

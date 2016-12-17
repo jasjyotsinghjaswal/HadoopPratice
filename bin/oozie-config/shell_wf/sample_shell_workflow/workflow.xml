@@ -1,0 +1,44 @@
+<workflow-app name="oozie-Shell-test" xmlns="uri:oozie:workflow:0.5">
+	<global>
+		<job-tracker>${jobTracker}</job-tracker>
+		<name-node>${nameNode}</name-node>
+	</global>
+	<start to="shell_action" />
+	<kill name="Kill">
+		<message>Action failed for Shell , error
+			message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+	</kill>
+	<action name="shell_action">
+		<shell xmlns="uri:oozie:shell-action:0.1">
+			<job-tracker>${jobTracker}</job-tracker>
+			<name-node>${nameNode}</name-node>
+			<configuration>
+				<property>
+					<name>mapred.job.queue.name</name>
+					<value>${queueName}</value>
+				</property>
+			</configuration>
+			<exec>compute.ksh</exec>
+			<argument>${wf:conf("num")}</argument>
+			<file>/user/cloudera/sample_shell_workflow/multiply.ksh#compute.ksh
+			</file>
+			<capture-output />
+		</shell>
+		<ok to="hive-write-res" />
+		<error to="Kill" />
+	</action>
+	<action name="hive-write-res">
+		<hive2 xmlns="uri:oozie:hive2-action:0.1">
+			<jdbc-url>jdbc:hive2://localhost:10000</jdbc-url>
+			<script>/user/cloudera/sample_shell_workflow/hive-put_data.hql
+			</script>
+			<param>res=${wf:actionData('shell_action')['output']}</param>
+			<param>queuename=${queueName}</param>
+			<param>dbname=oozietest</param>
+			<param>final_table=storedoublecount</param>
+		</hive2>
+		<ok to="End" />
+		<error to="Kill" />
+	</action>
+	<end name="End" />
+</workflow-app>
