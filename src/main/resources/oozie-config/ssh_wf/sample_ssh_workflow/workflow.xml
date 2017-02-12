@@ -1,0 +1,22 @@
+<workflow-app name="oozie-Java-test" xmlns="uri:oozie:workflow:0.5">
+	<global>
+		<job-tracker>${jobTracker}</job-tracker>
+		<name-node>${nameNode}</name-node>
+	</global>
+	<start to="ssh_action" />
+	<kill name="Kill">
+		<message>Action failed for Shell , error
+			message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+	</kill>
+	<action name="ssh_action">
+         <ssh xmlns="uri:oozie:ssh-action:0.1">
+            <host>user@192.168.187.136</host>
+            <command>sh</command>
+            <args>makemydir.sh</args>
+            <args>{dirname}</args>
+         </ssh>
+			<ok to="End" />
+		<error to="Kill" />
+	</action>
+	<end name="End" />
+</workflow-app>
