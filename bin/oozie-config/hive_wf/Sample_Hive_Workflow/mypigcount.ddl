@@ -1,6 +1,0 @@
-CREATE EXTERNAL TABLE mypigcount (
-count INT
-)
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY ','
-LOCATION '/user/cloudera/mypigcount'
